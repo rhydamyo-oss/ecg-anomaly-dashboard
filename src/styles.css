@@ -1,0 +1,69 @@
+:root{--bg:#e9eff2;--panel:#fff;--ink:#0f2530;--muted:#587080;--line:#d5e0e6;--rail:#0f2530;--accent:#0e7c86;--accent-soft:#dff2f3;--ok:#0f8a5f;--ok-soft:#dcf5ea;--bad:#d62839;--bad-soft:#fde4e7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1318;--panel:#121f27;--ink:#e5eef2;--muted:#8da3b0;--line:#24363f;--rail:#070e12;--accent:#3cc4cf;--accent-soft:#143a40;--ok:#44d89d;--ok-soft:#10382b;--bad:#ff6674;--bad-soft:#40191f}}
+:root[data-theme="dark"]{--bg:#0a1318;--panel:#121f27;--ink:#e5eef2;--muted:#8da3b0;--line:#24363f;--rail:#070e12;--accent:#3cc4cf;--accent-soft:#143a40;--ok:#44d89d;--ok-soft:#10382b;--bad:#ff6674;--bad-soft:#40191f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 14px/1.5 "Plus Jakarta Sans",system-ui,sans-serif;display:flex;min-height:100vh}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-family:Sora,"Plus Jakarta Sans",sans-serif;font-variant-numeric:tabular-nums}
+nav{width:92px;background:var(--rail);display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;position:sticky;top:0;height:100vh;flex:none}
+.logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#17b8c4,#0e7c86);display:grid;place-items:center;margin-bottom:18px}
+nav button{width:76px;background:none;border:0;border-radius:14px;padding:10px 0;color:#9fb6c2;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:600}
+nav button svg{width:26px;height:26px}
+nav button:hover{background:#1b3340;color:#fff}
+nav button[aria-current="page"]{background:#17b8c4;color:#06222a}
+nav .sp{flex:1}
+.wrap{flex:1;min-width:0;padding:22px 28px 36px;max-width:1400px}
+.bar{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;margin-bottom:18px}
+.bar h1{font:700 24px Sora,sans-serif;margin:0;margin-right:auto}
+.bar h1 small{display:block;font:500 13px "Plus Jakarta Sans";color:var(--muted);margin-top:2px}
+select,.seg{background:var(--panel);border:1px solid var(--line);border-radius:12px;font:inherit;font-weight:600;color:var(--ink)}
+select{padding:10px 14px;min-width:230px}
+.seg{display:inline-flex;padding:4px;gap:2px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:9px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.lbl{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;font-weight:600}
+.alert{display:none;align-items:center;gap:16px;background:var(--bad);color:#fff;padding:14px 20px;border-radius:16px;margin-bottom:18px;animation:fl 1.1s ease-in-out infinite alternate}
+.alert.on{display:flex}.alert b{font-size:17px}.alert span{flex:1}
+.alert button{background:#fff;color:var(--bad);border:0;border-radius:10px;padding:9px 18px;font-weight:700}
+@keyframes fl{to{filter:brightness(1.18)}}
+@media (prefers-reduced-motion:reduce){.alert,.dot{animation:none}}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+.screen{background:#04121a;border-radius:22px;padding:14px;box-shadow:0 0 0 6px #14222b,0 14px 34px rgba(5,25,35,.3);position:relative}
+.screen canvas{display:block;width:100%;height:340px}
+.screen .tag{position:absolute;top:24px;left:28px;color:#6fd9e3;font-weight:700;font-size:13px}
+.screen .key{position:absolute;bottom:22px;right:28px;display:flex;gap:16px;color:#8fb3bf;font-size:12px}
+.screen .key i{display:inline-block;width:16px;border-top:3px solid;margin-right:6px;vertical-align:middle}
+.ctrls{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:22px}
+.big{border:0;border-radius:14px;padding:14px 24px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:10px;color:#fff}
+.big svg{width:20px;height:20px}
+.go{background:var(--ok)}.go.live{background:#c47a00}.sim{background:var(--bad)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.vit{display:flex;flex-direction:column;gap:14px}
+.status{padding:20px;background:var(--ok-soft);border-radius:20px;border:2px solid var(--ok)}
+.status.bad{background:var(--bad-soft);border-color:var(--bad)}
+.status .k{font-size:12px;color:var(--muted);font-weight:700}
+.status .v{font:700 25px Sora,sans-serif;color:var(--ok);margin:4px 0}.status.bad .v{color:var(--bad)}
+.status p{margin:0;font-size:13px;color:var(--muted)}
+.tile{padding:16px 20px}
+.tile .k{font-size:12px;color:var(--muted);font-weight:700}
+.tile .big2{font:700 44px/1.1 Sora,sans-serif;display:flex;align-items:baseline;gap:8px}
+.tile .big2 small{font:600 14px "Plus Jakarta Sans";color:var(--muted)}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--bad);align-self:center;animation:bt .83s infinite}
+@keyframes bt{0%,100%{transform:scale(1)}15%{transform:scale(1.7)}}
+.tabs{margin-top:24px}
+.tabs>.seg{margin-bottom:14px}
+.row{display:grid;grid-template-columns:8px 1.1fr 1fr 1fr 2fr auto;gap:16px;align-items:center;padding:14px 18px 14px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}.row>i{align-self:stretch;background:var(--ok)}.row.bad>i{background:var(--bad)}
+.row span{display:block;font-size:12px;color:var(--muted)}.row b{font-weight:700}
+.chip{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:var(--ok-soft);color:var(--ok)}.bad .chip{background:var(--bad-soft);color:var(--bad)}
+.p{padding:18px 20px}.p h2{margin:0 0 6px;font:700 18px Sora,sans-serif}.p p{margin:0 0 10px;color:var(--muted);max-width:70ch}
+.ev{display:flex;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.pts{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.pt{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;text-align:left;display:block;width:100%}
+.pt:hover{border-color:var(--accent)}.pt h3{margin:0;font:700 17px Sora,sans-serif}.pt p{margin:4px 0 14px;color:var(--muted)}
+.hide{display:none!important}
+.foot{margin-top:28px;color:var(--muted);font-size:12px}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}.row{grid-template-columns:8px 1fr 1fr;}.row>:nth-child(n+4){grid-column:2/-1}}
+@media (max-width:640px){nav{width:64px}nav button{width:56px;font-size:10px}.wrap{padding:16px}}
