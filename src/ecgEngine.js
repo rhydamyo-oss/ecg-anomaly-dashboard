@@ -1,40 +1,8 @@
-export class ECGEngine {
-  constructor() {
-    this.t = 0;
-    this.isAnomalyActive = false;
-  }
-
-  generateSample() {
-    this.t += 0.04;
-    const period = this.t % (2 * Math.PI);
-
-    let pWave = 0.15 * Math.exp(-Math.pow(period - 1.0, 2) / 0.02);
-    let qrsWave = 1.2 * Math.exp(-Math.pow(period - 2.0, 2) / 0.005) - 0.2 * Math.exp(-Math.pow(period - 1.9, 2) / 0.005);
-    let tWave = 0.3 * Math.exp(-Math.pow(period - 3.2, 2) / 0.08);
-
-    let baselineSignal = pWave + qrsWave + tWave;
-    const noise = (Math.random() - 0.5) * 0.03;
-    let observedSignal = baselineSignal + noise;
-
-    if (this.isAnomalyActive && period > 2.1 && period < 3.0) {
-      observedSignal += 0.45;
-    }
-
-    let reconstructedBaseline = baselineSignal;
-    const reconstructionError = Math.abs(observedSignal - reconstructedBaseline);
-
-    return {
-      time: this.t.toFixed(2),
-      observed: parseFloat(observedSignal.toFixed(3)),
-      reconstructed: parseFloat(reconstructedBaseline.toFixed(3)),
-      error: parseFloat(reconstructionError.toFixed(3))
-    };
-  }
-
-  triggerAnomaly(durationMs = 4000) {
-    this.isAnomalyActive = true;
-    setTimeout(() => {
-      this.isAnomalyActive = false;
-    }, durationMs);
-  }
+export class ECGEngine{
+  constructor(){this.t=0;this.anom=false}
+  next(){this.t+=0.04;const p=this.t%(2*Math.PI),g=(x,m,v)=>Math.exp(-Math.pow(x-m,2)/v);
+    const base=0.15*g(p,1,0.02)+1.2*g(p,2,0.005)-0.2*g(p,1.9,0.005)+0.3*g(p,3.2,0.08);
+    let o=base+(Math.random()-0.5)*0.03;if(this.anom&&p>2.1&&p<3.0)o+=0.45;
+    return{o,b:base,e:Math.abs(o-base)}}
+  trigger(ms=4000){this.anom=true;setTimeout(()=>this.anom=false,ms)}
 }
