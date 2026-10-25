@@ -1,172 +1,71 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CardioAI — ECG Anomaly Detection Dashboard</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
-          }
-        }
-      }
-    }
-  </script>
-  
-  <!-- Chart.js & Lucide Icons -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CardioAI – ECG Anomaly Monitor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="src/styles.css">
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen">
+<body>
+<nav aria-label="Main">
+  <div class="logo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h5l2.5-7 4 14 2.5-7H22"/></svg></div>
+  <button data-v="monitor" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M5 11h3l2-3 3 6 2-3h4M8 21h8"/></svg>Monitor</button>
+  <button data-v="patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6M17 5a3.5 3.5 0 010 7M22 20c0-3-2-5-5-5.7"/></svg>Patients</button>
+  <button data-v="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6zM14 2v6h6M9 13h8M9 17h8"/></svg>Reports</button>
+  <div class="sp"></div>
+  <button id="theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 13A9 9 0 1111 3a7 7 0 0010 10z"/></svg>Theme</button>
+</nav>
 
-  <div class="flex h-screen overflow-hidden">
-    
-    <!-- Sidebar Navigation -->
-    <aside class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between p-4 z-20">
-      <div>
-        <div class="flex items-center gap-3 px-2 py-3 mb-6">
-          <div class="bg-blue-600 text-white p-2 rounded-xl shadow-md shadow-blue-500/20">
-            <i data-lucide="activity" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <h1 class="font-bold text-lg leading-tight">Cardio<span class="text-blue-600">AI</span></h1>
-            <p class="text-xs text-slate-400">Zero-Shot Anomaly Platform</p>
-          </div>
-        </div>
-
-        <nav class="space-y-1">
-          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
-            <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
-          </a>
-          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <i data-lucide="users" class="w-5 h-5"></i> Patients
-          </a>
-          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <i data-lucide="file-text" class="w-5 h-5"></i> Reports
-          </a>
-        </nav>
-      </div>
-
-      <!-- Theme Switcher -->
-      <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-        <span class="text-xs font-semibold text-slate-500">Theme</span>
-        <button id="themeToggle" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
-          <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-6 space-y-6">
-      
-      <!-- Top Header -->
-      <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-2xl font-bold">Hello, Doctor 👋</h2>
-          <p class="text-slate-500 dark:text-slate-400 text-sm">Real-Time Zero-Shot Cardiac Anomaly Analytics</p>
-        </div>
-        
-        <div class="flex items-center gap-3">
-          <button id="streamBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium shadow-lg shadow-emerald-500/20 transition">
-            <i data-lucide="play" class="w-4 h-4"></i> Start Stream
-          </button>
-          <button id="injectAnomalyBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-medium shadow-lg shadow-rose-500/20 transition">
-            <i data-lucide="alert-triangle" class="w-4 h-4"></i> Trigger Anomaly
-          </button>
-        </div>
-      </header>
-
-      <!-- Dashboard Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Heart Pulse Focus Card -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Target Focus</span>
-              <span class="px-2.5 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-semibold">Lead II Active</span>
-            </div>
-            
-            <div class="relative my-6 flex items-center justify-center">
-              <div class="w-44 h-44 rounded-full bg-blue-50 dark:bg-slate-800/60 flex items-center justify-center relative">
-                <i data-lucide="heart" class="w-24 h-24 text-rose-500 animate-pulse"></i>
-                <div class="absolute -top-2 right-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl shadow border border-slate-100 dark:border-slate-700 text-xs">
-                  <p class="text-slate-400 text-[10px]">Baseline HR</p>
-                  <p class="font-bold text-slate-800 dark:text-slate-100" id="hrDisplay">72 BPM</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40">
-              <p class="text-xs text-slate-400">Reconstruct MSE</p>
-              <p class="text-lg font-bold text-slate-800 dark:text-slate-200" id="mseDisplay">0.012</p>
-            </div>
-            <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40">
-              <p class="text-xs text-slate-400">Status</p>
-              <span id="statusBadge" class="inline-block mt-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">NORMAL</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Real-Time Chart -->
-        <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-            <div>
-              <h3 class="font-bold text-lg">ECG Signal vs Baseline Reconstruction</h3>
-              <p class="text-xs text-slate-400">Unsupervised Zero-Shot Detection (<span class="text-rose-500 font-semibold">Red Overlay = Reconstruction Deviations</span>)</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <label class="text-xs text-slate-400">Sensitivity:</label>
-              <input id="threshSlider" type="range" min="0.01" max="0.1" step="0.005" value="0.035" class="w-24 accent-blue-600">
-            </div>
-          </div>
-
-          <div class="relative h-64 w-full">
-            <canvas id="ecgChart"></canvas>
-          </div>
-
-          <div class="flex items-center justify-between text-xs text-slate-400 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <span class="flex items-center gap-1.5"><span class="w-3 h-1 bg-cyan-400 rounded-full inline-block"></span> Observed ECG</span>
-            <span class="flex items-center gap-1.5"><span class="w-3 h-1 bg-slate-400 rounded-full inline-block"></span> Reconstructed Baseline</span>
-            <span class="flex items-center gap-1.5"><span class="w-3 h-1 bg-rose-500 rounded-full inline-block"></span> Anomaly Highlight</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Waveform Parameter Table -->
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-        <h3 class="font-bold text-lg mb-4">Waveform Parameter Comparison</h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead class="text-xs text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
-              <tr>
-                <th class="py-3 px-4">Segment</th>
-                <th class="py-3 px-4">Observed Value</th>
-                <th class="py-3 px-4">Normal Baseline Range</th>
-                <th class="py-3 px-4">Deviation</th>
-                <th class="py-3 px-4">Clinical Significance</th>
-              </tr>
-            </thead>
-            <tbody id="reportTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60">
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </main>
+<div class="wrap">
+<!-- MONITOR -->
+<section id="v-monitor">
+  <div class="bar">
+    <h1>Live ECG monitor<small id="sub">Waiting for stream</small></h1>
+    <div><span class="lbl">Patient</span><select id="pt" aria-label="Select patient"></select></div>
+    <div><span class="lbl">Lead</span><div class="seg" id="lead"><button aria-pressed="false">I</button><button aria-pressed="true">II</button><button aria-pressed="false">V1</button></div></div>
   </div>
 
-  <script type="module" src="src/main.js"></script>
+  <div class="alert" id="alert" role="alert"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20zM12 10v5M12 18v.5"/></svg><span><b>ST-segment elevation detected</b><br>Signal deviates from the healthy baseline. Please review this patient.</span><button id="ack">Acknowledge</button></div>
+
+  <div class="grid">
+    <div>
+      <div class="screen">
+        <canvas id="ecg" aria-label="Live ECG trace"></canvas>
+        <div class="tag" id="tag">Lead II · 25 mm/s</div>
+        <div class="key"><span><i style="border-color:#4dffb8"></i>Observed</span><span><i style="border-color:#5f8190;border-top-style:dashed"></i>Healthy baseline</span><span><i style="border-color:#ff5d6c"></i>Deviation</span></div>
+      </div>
+      <div class="ctrls">
+        <button class="big go" id="stream"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg><span>Start stream</span></button>
+        <button class="big sim" id="inject"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20zM12 10v5"/></svg>Simulate ST elevation</button>
+        <div style="margin-left:auto"><span class="lbl">Detection sensitivity</span><div class="seg" id="sens"><button data-t="0.02" aria-pressed="false">High</button><button data-t="0.035" aria-pressed="true">Balanced</button><button data-t="0.06" aria-pressed="false">Low</button></div></div>
+        <div><span class="lbl">Audio alert</span><div class="seg" id="snd"><button aria-pressed="false">Off</button><button aria-pressed="true" class="x">On</button></div></div>
+      </div>
+    </div>
+    <div class="vit">
+      <div class="status" id="status"><div class="k">Rhythm status</div><div class="v" id="sv">Normal</div><p id="sp">Signal matches the learned healthy baseline.</p></div>
+      <div class="card tile"><div class="k">Heart rate</div><div class="big2"><span id="hr">72</span><small>bpm</small><span class="dot"></span></div></div>
+      <div class="card tile"><div class="k">Reconstruction error (MSE)</div><div class="big2"><span id="mse">0.012</span></div><p style="margin:6px 0 0;font-size:12px;color:var(--muted)">Flagged above <b id="thv">0.035</b></p></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="seg" id="tabs"><button data-t="find" aria-pressed="true">Findings</button><button data-t="log" aria-pressed="false">Event log <span id="cnt">(0)</span></button><button data-t="about" aria-pressed="false">How it works</button></div>
+    <div class="card" id="t-find"></div>
+    <div class="card hide" id="t-log"></div>
+    <div class="card hide" id="t-about"><div class="p"><h2>Label-free anomaly detection</h2><p>Current ECG workflows rely on slow manual screening and supervised AI that needs labelled examples, so rare cardiac anomalies are missed.</p><p>CardioAI learns what a healthy heartbeat looks like, reconstructs each incoming beat from that baseline, and flags any beat the baseline cannot explain. No examples of the disease are needed.</p></div></div>
+  </div>
+</section>
+
+<!-- PATIENTS -->
+<section id="v-patients" class="hide"><div class="bar"><h1>Patients<small>Select a patient to open the live monitor</small></h1></div><div class="pts" id="ptlist"></div></section>
+
+<!-- REPORTS -->
+<section id="v-reports" class="hide"><div class="bar"><h1>Session report<small id="rsub"></small></h1></div><div class="card" id="rep"></div></section>
+
+<p class="foot">Research prototype. Not a certified medical device and not for clinical diagnosis.</p>
+</div>
+
+<script type="module" src="src/main.js"></script>
 </body>
 </html>
